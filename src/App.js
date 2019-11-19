@@ -1,26 +1,43 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import axios from 'axios';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class App extends React.Component {
+  constructor(props) {
+  super(props);
+    this.state = {
+      object: [],
+      result:[]
+    }
+  }
+
+  componentDidMount ()  {
+    const proxyurl = "https://cors-anywhere.herokuapp.com/";
+    const url = 'http://developer.itsmarta.com/BRDRestService/RestBusRealTimeService/GetAllBus'; // Doesn’t send Access-Control-*
+    axios.get(proxyurl + url)
+      .then(res => {
+        const object = res.data;
+        const result = res.data.map(({  
+          "ROUTE": route,
+          "LATITUDE": lat,
+          "LONGITUDE": long,
+          "TIMEPOINT": timepoint 
+        }) => ({ route, lat, long, timepoint }));
+        this.setState({result});
+        this.setState({object});
+      })
+      .catch(function(error) {
+        console.log(error);
+      }); 
+    }
+
+
+  render() {
+    console.log(this.state.result);
+    return (
+      <div className="App"></div>
+    );
+  }
 }
 
 export default App;
